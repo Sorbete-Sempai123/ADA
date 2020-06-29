@@ -1,80 +1,65 @@
 #include <iostream>
-#include <random>
-#include <time.h>
-
-#define MAX 16
-
 using namespace std;
-mt19937 mt(time(0));
 
-void Generador(int *array,int n,int m = 0){
-    for(int i=0 ; i < n ; i++ ) {
-        array[i] = mt()%(MAX);
-    }
-}
+long long contador = 0;
 
-void printarr(int *arr,int n){
-    for (int i = 0; i < n; i++){
-        cout << arr[i] << ' ';
-    }
-    cout << endl;
-}
-
-int maximo(int *arr,int n){
-    int max = arr[0];
-    for (int i = 1; i < n; i++){
-        if(arr[i]>max){
-            max = arr[i];
-        }
-    }
-    cout <<endl <<  "MAX ->"<<max<<endl;
-    return max;
-}
-
-//4 argumentos , array , tamaño, divisor
-int FindMed(int *arr,int tam,int max,int div,int med){
-    cout << "Begin ->";
+void swap(int* a, int* b)  
+{  
+    int t = *a;  
+    *a = *b;  
+    *b = t;  
+}  
+  
+int partition (int arr[], int low, int high)  
+{  
+    int pivot = arr[high]; 
+    int i = (low - 1);
+  
+    for (int j = low; j <= high - 1; j++)  
+    {   
+        if (arr[j] < pivot)  
+        {  
+            i++; 
+            
+            swap(&arr[i], &arr[j]);  
+            if(arr[i]!=arr[j])
+                contador += 2*(j-i)-1;
+        }  
+    }  
+    swap(&arr[i + 1], &arr[high]);
+    if(arr[i+1]!=arr[high])
+        contador += 2*(high - (i+1))-1;  
     
-    int *B = new int[tam];
-    int i=0,j=tam-1;
-    int divC = max/div;
-    if(divC == 1 || med == 0){
-        cout << "Caso Final" <<"//"<<med << "\n";
-        return arr[i];
-    }
-    for (int k=0 ; k < tam; k++){
-        if((arr[k]/divC)%2 == 0 ){
-            B[i]=arr[k];
-            i++;
-        }
-        else{
-            B[j]=arr[k];
-            j--;
-        }
-    }
-    printarr(B,tam);
-    cout << i << "<>" << j << "=" << tam-i;
-    cout << " | Divc" << divC << endl;
-    if(med < i-1){//Caso 1
-        cout << "Caso 1" <<"//"<<med <<"\n";
-        return FindMed(B,i,max,div*2,med);
-    }//Caso 2
-    else if( med > i-1){
-        cout << "Caso 2" <<"//"<<med-(i) << "\n";
-        return FindMed(&B[i],tam-i,max,div*2,med-(i));
-    }
-    cout << "Caso 3" <<"//"<<med << "\n";
-    return maximo(B,i);
-}
+    return (i + 1);  
+}  
 
+void quickSort(int arr[], int low, int high)  
+{  
+    if (low < high)  
+    {  
+        int pi = partition(arr, low, high);  
+        quickSort(arr, low, pi - 1);  
+        quickSort(arr, pi + 1, high);  
+    }  
+}   
+  
 int main(){
-    int n=8;
-    int *A = new int[n];
-    Generador(A,n);
-    printarr(A,n);
-    cout << endl;
-    cout<<FindMed(A,n,MAX,2,n/2-1)<<endl;
-
+    int n;
+    cin >> n;
+    int m;
+    for (int i = 0; i < n; i++){
+        cin >> m;
+        int *A = new int[m];
+        for (int j = 0; j < m; j++){
+            cin >> A[j];
+        }
+        quickSort(A,0,m-1);
+        cout << "La mejor cantidad de swaps de trenes es "<<contador<<" swaps.\n";
+        contador = 0;
+        /* code */
+    }
+    
+    
 
     return 0;
 }
